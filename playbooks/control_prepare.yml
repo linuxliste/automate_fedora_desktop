@@ -1,0 +1,19 @@
+---
+- name: prepare the inventory for a new desktop
+  hosts: localhost
+  gather_facts: false
+  become: false
+
+  tasks:
+    - name: output roles glob
+      ansible.builtin.find:
+        paths: "{{ playbook_dir | dirname }}/roles"
+        depth: 1
+        file_type: directory
+      register: __inventory_roles
+    - name: output list of roles
+      debug:
+        msg: "{{ item.path | basename }}"
+      loop: "{{ __inventory_roles.files }}"
+      loop_control:
+        label: "{{ item.path | basename }}"
